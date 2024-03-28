@@ -1,4 +1,19 @@
-# Logs
+package-lock.json
+yarn.lock
+
+# Local env files
+*.local
+.env.local
+.env.*.local
+
+# Building and testing
+dist/
+dist-ssr/
+coverage
+/cypress/videos/
+/cypress/screenshots/
+
+# Log files
 logs
 *.log
 npm-debug.log*
@@ -7,15 +22,33 @@ yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
 
-node_modules
-.DS_Store
-dist
-*.local
-
 # Editor directories and files
 .idea
+.vscode/*
+!.vscode/extensions.json
 *.suo
 *.ntvs*
 *.njsproj
 *.sln
 *.sw?
+
+# OS hidden files
+Thumbs.db
+ehthumbs.db
+[Dd]esktop.ini
+$RECYCLE.BIN/
+.DS_Store
+
+# Other VCS directories
+.svn
+
+# Dependencies
+node_modules/
+
+# Temporary files and non-source files
+*.tmp
+*.bak
+*.swp
+*.lnk
+*.zip
+*.gz
