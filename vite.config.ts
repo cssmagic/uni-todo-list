@@ -6,4 +6,11 @@ export default defineConfig({
 	plugins: [
 		uni(),
 	],
+	css: {
+		preprocessorOptions: {
+			scss: {
+				additionalData: '@use "@/assets/css/base/index.scss" as *;',
+			},
+		},
+	},
 })
