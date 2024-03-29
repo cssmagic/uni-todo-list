@@ -13,7 +13,8 @@
 			"dom"
 		],
 		"types": [
-			"@dcloudio/types"
+			"@dcloudio/types",
+			"@types/uuid",
 		]
 	},
 	"include": [
