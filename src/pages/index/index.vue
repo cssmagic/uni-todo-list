@@ -84,29 +84,34 @@ function dialogDeleteConfirm() {
 <template>
 	<div class="content">
 		<div class="main-view">
-			<template v-if="!$tasks.length">
-				Empty, <span @click="onClickAddBtn">[Add]</span>
-			</template>
+			<div v-if="!$tasks.length" class="empty">
+				<div>（你的任务清单空空如也）</div>
+				<div class="add" @click="onClickAddBtn">点此创建新任务</div>
+			</div>
 			<div class="task-list" v-else>
 				<div
-					class="task-item"
 					v-for="item in $tasks"
 					:key="item.id"
+					class="task-item"
 					:class="item.isCompleted ? 'is-completed' : ''"
 					:data-id="item.id"
 				>
-					<div class="task-status">
+					<label class="task-status">
 						<checkbox
 							:checked="!!item.isCompleted"
 							@click="onClickCheckbox(item)"
 						/>
+					</label>
+					<div class="task-title" @click="onClickTaskTitle(item)">
+						{{ item.title }}
 					</div>
-					<span class="task-title" @click="onClickTaskTitle(item)">{{ item.title }}</span>
-					<div class="task-action">
-						<text @click="deleteTask(item)">[Delete]</text>
+					<div class="task-action" @click="deleteTask(item)">
+						<text>[Delete]</text>
 					</div>
 				</div>
+				<div class="total">共 {{ $tasks.length }} 个任务</div>
 			</div>
+
 
 			<uni-popup ref="$dialogInputTitle" type="dialog">
 				<uni-popup-dialog
@@ -133,8 +138,15 @@ function dialogDeleteConfirm() {
 
 
 			<div class="action">
-				<hr>
-				<span @click="onClickAddBtn">[Add]</span>
+				<label class="action-inner">
+					<button
+						size="default"
+						type="primary"
+						hover-class="is-hover"
+						@click="onClickAddBtn"
+					>创建新任务
+					</button>
+				</label>
 			</div>
 		</div>
 		<div class="detail-view">
@@ -149,7 +161,6 @@ function dialogDeleteConfirm() {
 	height: 100%;
 	display: flex;
 	flex-direction: row;
-	// 子元素水平居中
 	justify-content: center;
 }
 .main-view {
@@ -165,10 +176,77 @@ function dialogDeleteConfirm() {
 	overflow-y: auto;
 }
 
-// task item
-.is-completed .task-title {
-	text-decoration: line-through;
+.empty {
+	padding-top: 80px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	flex-direction: column;
 	color: #999;
+	.add {
+		margin-top: 20px;
+		padding: 10px;
+		text-decoration: underline;
+		cursor: pointer;
+		&:hover {
+			color: #333;
+		}
+	}
+}
+
+// task item
+.task-list {
+	padding-bottom: 100px;
+}
+.task-item {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	border-bottom: 1px solid #ddd;
+	.task-status {
+		flex: 0 0;
+		padding: 20px;
+	}
+	.task-title {
+		flex: 1 1;
+		align-self: stretch;
+		display: flex;
+		align-items: center;
+		padding: 20px;
+		cursor: pointer;
+	}
+	.task-action {
+		flex: 0 0;
+		padding: 20px;
+		cursor: pointer;
+	}
+	&.is-completed .task-title {
+		text-decoration: line-through;
+		color: #999;
+	}
+}
+
+.total {
+	padding: 20px;
+	color: #999;
+	text-align: center;
+}
+
+
+// action
+.action {
+	display: flex;
+	justify-content: center;
+	position: fixed;
+	bottom: 0;
+	left: 0;
+	width: 100%;
+	background-color: #0006;
+}
+.action-inner {
+	padding: 15px 20px;
+	width: 100%;
+	max-width: 640px;
 }
 
 
