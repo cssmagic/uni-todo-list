@@ -1,33 +1,82 @@
 <script setup lang="ts">
 import { ref, reactive } from 'vue'
 import type { ITask } from '@/types'
+import type { UniPopup } from '@uni-helper/uni-ui-types'
 import * as storage from '@/utils/storage'
 
 const $tasks = storage.getItems()
+const $dialogInputTitle = ref<UniPopup>()
+const $dialogDelete = ref<UniPopup>()
+const titleCreate = '创建新任务'
+const titleEdit = '修改任务标题'
+const confirmTextCreate = '创建'
+const confirmTextEdit = '保存'
+const $dialogTitle = ref('')
+const $confirmText = ref('')
+const $currentTaskTitle = ref('')
+const $promptDeleteTask = ref('')
+let currentAction = 'create'	// 'create' | 'edit'
+let currentTask: null | ITask = null
 
 function onClickAddBtn() {
-	const title = prompt('请输入任务标题：')
-	if (title) {
-		const task: ITask = {
-			title,
-			isCompleted: false,
-		}
-		storage.addItem(task)
-	}
+	// 更新状态
+	currentAction = 'create'
+	currentTask = null
+	$currentTaskTitle.value = ''
+
+	$dialogTitle.value = titleCreate
+	$confirmText.value = confirmTextCreate
+
+	$dialogInputTitle.value!.open()
 }
+
+function onClickTaskTitle(item: ITask) {
+	// 更新状态
+	currentAction = 'edit'
+	currentTask = item
+	$currentTaskTitle.value = item.title
+
+	$dialogTitle.value = titleEdit
+	$confirmText.value = confirmTextEdit
+
+	$dialogInputTitle.value!.open()
+}
+
 function onClickCheckbox(item: ITask) {
 	item.isCompleted = !item.isCompleted
 }
-function onClickTaskTitle(item: ITask) {
-	console.log('click:', item)
-	const title = prompt('把任务标题修改为：', item.title)
-	if (title) {
-		item.title = title
-	}
-}
+
 function deleteTask(item: ITask) {
 	console.log('delete:', item.id)
-	storage.deleteItem(item)
+	currentTask = item
+	$promptDeleteTask.value = `是否删除 “${item.title}”？`
+
+	$dialogDelete.value!.open()
+}
+
+function dialogInputConfirm(value: string) {
+	const title = value || '未命名任务'
+	const task: ITask = {
+		title,
+		isCompleted: false,
+	}
+	if (currentAction === 'create') {
+		storage.addItem(task)
+	} else {
+		if (currentTask) {
+			currentTask.title = title
+		}
+	}
+	// 把暂存变量清空
+	currentTask = null
+}
+
+function dialogDeleteConfirm() {
+	if (currentTask) {
+		storage.deleteItem(currentTask)
+	}
+	// 把暂存变量清空
+	currentTask = null
 }
 
 </script>
@@ -57,14 +106,39 @@ function deleteTask(item: ITask) {
 						<text @click="deleteTask(item)">[Delete]</text>
 					</div>
 				</div>
-				<div class="action">
-					<hr>
-					<span @click="onClickAddBtn">[Add]</span>
-				</div>
 			</div>
-			<div class="detail-view">
-				<!--TODO-->
+
+			<uni-popup ref="$dialogInputTitle" type="dialog">
+				<uni-popup-dialog
+					mode="input"
+					:title="$dialogTitle"
+					v-model="$currentTaskTitle"
+					placeholder="请输入任务标题"
+					:confirmText="$confirmText"
+					cancelText="取消"
+					@confirm="dialogInputConfirm"
+				></uni-popup-dialog>
+			</uni-popup>
+
+			<uni-popup ref="$dialogDelete" type="dialog">
+				<uni-popup-dialog
+					mode="base"
+					title="确认删除"
+					:content="$promptDeleteTask"
+					confirmText="确认"
+					cancelText="取消"
+					@confirm="dialogDeleteConfirm"
+				></uni-popup-dialog>
+			</uni-popup>
+
+
+			<div class="action">
+				<hr>
+				<span @click="onClickAddBtn">[Add]</span>
 			</div>
+		</div>
+		<div class="detail-view">
+			<!--TODO-->
 		</div>
 	</div>
 </template>
