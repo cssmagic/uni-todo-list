@@ -5,6 +5,7 @@ import type { UniPopup } from '@uni-helper/uni-ui-types'
 import * as storage from '@/utils/storage'
 
 const $tasks = storage.getItems()
+const $bottom = ref(0)	// 底部安全距离
 const $dialogInputTitle = ref<UniPopup>()
 const $dialogDelete = ref<UniPopup>()
 const titleCreate = '创建新任务'
@@ -17,6 +18,10 @@ const $currentTaskTitle = ref('')
 const $promptDeleteTask = ref('')
 let currentAction: ('create' | 'edit') = 'create'
 let currentTask: (null | ITask) = null
+
+function init() {
+	$bottom.value = uni.getSystemInfoSync().windowBottom || 0
+}
 
 function onClickAddBtn() {
 	// 更新状态
@@ -79,6 +84,9 @@ function dialogDeleteConfirm() {
 	currentTask = null
 }
 
+// init
+init()
+
 </script>
 
 <template>
@@ -138,14 +146,13 @@ function dialogDeleteConfirm() {
 
 
 			<div class="action">
-				<label class="action-inner">
+				<label class="action-inner" :style="{ marginBottom: $bottom + 'px' }">
 					<button
 						size="default"
 						type="primary"
 						hover-class="is-hover"
 						@click="onClickAddBtn"
-					>创建新任务
-					</button>
+					>创建新任务</button>
 				</label>
 			</div>
 		</div>
