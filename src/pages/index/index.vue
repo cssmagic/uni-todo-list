@@ -9,9 +9,9 @@ const $tasks = storage.getItems()
 const $bottom = ref(0)	// 底部安全距离
 const $dialogInputTitle = ref<UniPopup>()
 const $dialogDelete = ref<UniPopup>()
-const titleCreate = '创建新任务'
+const titleCreate = '添加新任务'
 const titleEdit = '修改任务标题'
-const confirmTextCreate = '创建'
+const confirmTextCreate = '确定'
 const confirmTextEdit = '保存'
 const $dialogTitle = ref('')
 const $confirmText = ref('')
@@ -96,7 +96,17 @@ init()
 		<div class="main-view">
 			<div v-if="!$tasks.length" class="empty">
 				<div>（你的任务清单空空如也）</div>
-				<div class="add" @click="onClickAddBtn">点此创建新任务</div>
+				<div class="add">
+					<button
+						size="mini"
+						type="default"
+						hover-class="is-hover"
+						@click="onClickAddBtn"
+					>
+						<uni-icons type="plusempty" size="12" color="currentColor"></uni-icons>
+						<span style="margin-left: 5px;">添加任务</span>
+					</button>
+				</div>
 			</div>
 			<div class="task-list" v-else>
 				<div
@@ -154,7 +164,10 @@ init()
 						type="primary"
 						hover-class="is-hover"
 						@click="onClickAddBtn"
-					>创建新任务</button>
+					>
+						<uni-icons type="plusempty" size="16" color="currentColor"></uni-icons>
+						<span style="margin-left: 5px;">添加任务</span>
+					</button>
 				</label>
 			</div>
 		</div>
@@ -256,7 +269,7 @@ init()
 	bottom: 0;
 	left: 0;
 	width: 100%;
-	background-color: rgba(0,0,0,0.3);
+	background-color: rgba(0, 0, 0, 0.3);
 }
 .action-inner {
 	padding: 15px 20px;
