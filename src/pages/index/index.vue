@@ -3,6 +3,7 @@ import { ref, reactive } from 'vue'
 import type { ITask } from '@/types'
 import type { UniPopup } from '@uni-helper/uni-ui-types'
 import * as storage from '@/utils/storage'
+import { toSimpleDateTime } from '@/utils/formatter'
 
 const $tasks = storage.getItems()
 const $bottom = ref(0)	// 底部安全距离
@@ -60,7 +61,8 @@ function deleteTask(item: ITask) {
 }
 
 function dialogInputConfirm(value: string) {
-	const title = value || '未命名任务'
+	const now = toSimpleDateTime(new Date())
+	const title = value || `未命名任务 (${now})`
 	const task: ITask = {
 		title,
 		isCompleted: false,
