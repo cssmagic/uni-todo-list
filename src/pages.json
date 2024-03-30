@@ -10,13 +10,13 @@
 		{
 			"path": "pages/index/index",
 			"style": {
-				"navigationBarTitleText": "Todo List"
+				"navigationBarTitleText": "呆呆清单"
 			}
 		}
 	],
 	"globalStyle": {
+		"navigationBarTitleText": "呆呆清单",
 		"navigationBarTextStyle": "white",
-		"navigationBarTitleText": "Todo List",
 		"navigationBarBackgroundColor": "#333",
 		"backgroundColor": "#F8F8F8"
 	}
