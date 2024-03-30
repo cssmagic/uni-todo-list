@@ -106,7 +106,7 @@ function dialogDeleteConfirm() {
 						{{ item.title }}
 					</div>
 					<div class="task-action" @click="deleteTask(item)">
-						<text>[Delete]</text>
+						<uni-icons type="trash" size="24" color="currentColor"></uni-icons>
 					</div>
 				</div>
 				<div class="total">共 {{ $tasks.length }} 个任务</div>
@@ -212,13 +212,17 @@ function dialogDeleteConfirm() {
 		align-self: stretch;
 		display: flex;
 		align-items: center;
-		padding: 20px;
+		padding: 20px 0;
 		cursor: pointer;
 	}
 	.task-action {
 		flex: 0 0;
 		padding: 20px;
+		color: #999;
 		cursor: pointer;
+		&:hover {
+			color: #333;
+		}
 	}
 	&.is-completed .task-title {
 		text-decoration: line-through;
