@@ -1,4 +1,8 @@
 /// <reference types="vite/client" />
+/// <reference types="@dcloudio/types" />
+/// <reference types="miniprogram-api-typings" />
+/// <reference types="@uni-helper/uni-app-types" />
+/// <reference types="@uni-helper/uni-ui-types" />
 
 declare module '*.vue' {
 	import { DefineComponent } from 'vue'

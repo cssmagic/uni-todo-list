@@ -5,8 +5,6 @@
 import type { ITask } from '@/types'
 import { v4 as uuid } from 'uuid'
 import { ref, reactive, watch } from 'vue'
-import type { Ref } from 'vue'
-
 
 const demoData: Array<ITask> = [
 	{ id: '1c41909a-663f-4362-8359-ab09c653e7e2', title: 'Learn Vue 3', isCompleted: true },

@@ -15,8 +15,8 @@ const $dialogTitle = ref('')
 const $confirmText = ref('')
 const $currentTaskTitle = ref('')
 const $promptDeleteTask = ref('')
-let currentAction = 'create'	// 'create' | 'edit'
-let currentTask: null | ITask = null
+let currentAction: ('create' | 'edit') = 'create'
+let currentTask: (null | ITask) = null
 
 function onClickAddBtn() {
 	// 更新状态

@@ -12,12 +12,7 @@
 			"esnext",
 			"dom"
 		],
-		"types": [
-			"@dcloudio/types",
-			"@types/uuid",
-			"@uni-helper/uni-app-types",
-			"@uni-helper/uni-ui-types",
-		]
+		"types": []
 	},
 	"include": [
 		"src/**/*.ts",
