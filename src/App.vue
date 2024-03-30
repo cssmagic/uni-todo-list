@@ -13,14 +13,18 @@ onHide(() => {
 </script>
 
 <style lang="scss">
-body {
+uni-page-head {
 	font-family: 'Arial', sans-serif;
-	font-size: 16px;
-	line-height: 1;
 }
-
-// 让页面主体区域占满整个屏幕，以便实现两列布局
+page,
 uni-page-body {
+	// 让页面主体区域占满整个屏幕，以便实现两列布局
 	height: 100%;
+
+	font-family: 'Arial', sans-serif;
+	font-size: $fs;
+	line-height: 1;
+	color: $color;
+	background: $bg-color;
 }
 </style>

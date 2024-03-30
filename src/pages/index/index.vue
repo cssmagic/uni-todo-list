@@ -216,8 +216,10 @@ init()
 	}
 	.task-title {
 		flex: 1 1;
+		font-weight: bold;
 		align-self: stretch;
 		display: flex;
+		line-height: $lh;
 		align-items: center;
 		padding: 20px 0;
 		cursor: pointer;
@@ -233,7 +235,7 @@ init()
 	}
 	&.is-completed .task-title {
 		text-decoration: line-through;
-		color: #999;
+		color: #ccc;
 	}
 }
 
@@ -252,7 +254,7 @@ init()
 	bottom: 0;
 	left: 0;
 	width: 100%;
-	background-color: #0006;
+	background-color: rgba(0,0,0,0.3);
 }
 .action-inner {
 	padding: 15px 20px;
