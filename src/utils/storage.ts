@@ -3,7 +3,6 @@
 // - 写：只要数据有变更，就需要写入
 
 import type { ITask } from '@/types'
-import { v4 as uuid } from 'uuid'
 import { ref, reactive, watch } from 'vue'
 
 const demoData: Array<ITask> = [
@@ -27,6 +26,14 @@ function initStorage() {
 	}
 }
 
+function makeRandomId() {
+	return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, c => {
+		const r = Math.random() * 16 | 0
+		const v = c === 'x' ? r : (r & 0x3 | 0x8)
+		return v.toString(16)
+	})
+}
+
 // init
 watch($storage, save, { deep: true })
 
@@ -39,7 +46,7 @@ export function getItems() {
 }
 
 export function addItem(item: ITask) {
-	if (!item.id) item.id = uuid()
+	if (!item.id) item.id = makeRandomId()
 	$storage.value.push(item)
 }
 
