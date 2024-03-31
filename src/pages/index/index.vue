@@ -48,12 +48,13 @@ function onClickTaskTitle(item: ITask) {
 	$dialogInputTitle.value!.open()
 }
 
-function onClickCheckbox(item: ITask) {
+function onChangeCheckbox(item: ITask) {
+	// console.log('toggle:', item.id)
 	item.isCompleted = !item.isCompleted
 }
 
 function deleteTask(item: ITask) {
-	console.log('delete:', item.id)
+	// console.log('delete:', item.id)
 	currentTask = item
 	$promptDeleteTask.value = `是否删除 “${item.title}”？`
 
@@ -116,12 +117,13 @@ init()
 					:class="item.isCompleted ? 'is-completed' : ''"
 					:data-id="item.id"
 				>
-					<label class="task-status">
-						<checkbox
-							:checked="!!item.isCompleted"
-							@click="onClickCheckbox(item)"
-						/>
-					</label>
+					<checkbox-group class="task-status" @change="onChangeCheckbox(item)">
+						<label class="task-status-label">
+							<checkbox
+								:checked="!!item.isCompleted"
+							/>
+						</label>
+					</checkbox-group>
 					<div class="task-title" @click="onClickTaskTitle(item)">
 						{{ item.title }}
 					</div>
@@ -227,7 +229,10 @@ init()
 	border-bottom: 1px solid #ddd;
 	.task-status {
 		flex: 0 0;
-		padding: 20px;
+		.task-status-label {
+			display: block;
+			padding: 20px;
+		}
 	}
 	.task-title {
 		flex: 1 1;
