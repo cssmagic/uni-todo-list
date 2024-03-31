@@ -6,7 +6,8 @@ import * as storage from '@/utils/storage'
 import { toSimpleDateTime } from '@/utils/formatter'
 
 const $tasks = storage.getItems()
-const $bottom = ref(0)	// 底部安全距离
+const $screenMode = ref<'normal' | 'wide'>('normal')
+const $safeAreaBottom = ref(0)	// 底部安全距离
 const $dialogInputTitle = ref<UniPopup>()
 const $dialogDelete = ref<UniPopup>()
 const titleCreate = '添加新任务'
@@ -18,16 +19,28 @@ const $confirmText = ref('')
 const $currentTaskTitle = ref('')
 const $promptDeleteTask = ref('')
 let currentAction: ('create' | 'edit') = 'create'
-let currentTask: (null | ITask) = null
+const $currentTask = ref<null | ITask>(null)
 
 function init() {
-	$bottom.value = uni.getSystemInfoSync().windowBottom || 0
+	const systemInfo = uni.getSystemInfoSync()
+	// 处理底部安全区域（待验证）
+	$safeAreaBottom.value = systemInfo.safeAreaInsets?.bottom || 0
+	// 处理屏幕拉伸和旋转
+	uni.onWindowResize((result) => {
+		const windowWidth = result.size.windowWidth
+		_detectScreenMode(windowWidth)
+	})
+	_detectScreenMode(systemInfo.windowWidth)
+}
+
+function _detectScreenMode(windowWidth: number) {
+	$screenMode.value = windowWidth > 768 ? 'wide' : 'normal'
 }
 
 function onClickAddBtn() {
 	// 更新状态
 	currentAction = 'create'
-	currentTask = null
+	$currentTask.value = null
 	$currentTaskTitle.value = ''
 
 	$dialogTitle.value = titleCreate
@@ -37,9 +50,14 @@ function onClickAddBtn() {
 }
 
 function onClickTaskTitle(item: ITask) {
+	if ($screenMode.value === 'wide') {
+		$currentTask.value = item
+		return
+	}
+
 	// 更新状态
 	currentAction = 'edit'
-	currentTask = item
+	$currentTask.value = item
 	$currentTaskTitle.value = item.title
 
 	$dialogTitle.value = titleEdit
@@ -55,7 +73,7 @@ function onChangeCheckbox(item: ITask) {
 
 function deleteTask(item: ITask) {
 	// console.log('delete:', item.id)
-	currentTask = item
+	$currentTask.value = item
 	$promptDeleteTask.value = `是否删除 “${item.title}”？`
 
 	$dialogDelete.value!.open()
@@ -71,20 +89,20 @@ function dialogInputConfirm(value: string) {
 	if (currentAction === 'create') {
 		storage.addItem(task)
 	} else {
-		if (currentTask) {
-			currentTask.title = title
+		if ($currentTask.value) {
+			$currentTask.value.title = title
 		}
 	}
 	// 把暂存变量清空
-	currentTask = null
+	$currentTask.value = null
 }
 
 function dialogDeleteConfirm() {
-	if (currentTask) {
-		storage.deleteItem(currentTask)
+	if ($currentTask.value) {
+		storage.deleteItem($currentTask.value)
 	}
 	// 把暂存变量清空
-	currentTask = null
+	$currentTask.value = null
 }
 
 // init
@@ -93,7 +111,7 @@ init()
 </script>
 
 <template>
-	<div class="content">
+	<div class="content" :class="$screenMode">
 		<div class="main-view">
 			<div v-if="!$tasks.length" class="empty">
 				<div>（你的任务清单空空如也）</div>
@@ -114,7 +132,10 @@ init()
 					v-for="item in $tasks"
 					:key="item.id"
 					class="task-item"
-					:class="item.isCompleted ? 'is-completed' : ''"
+					:class="[
+						item.isCompleted ? 'is-completed' : '',
+						item.id === $currentTask?.id ? 'is-current' : ''
+					]"
 					:data-id="item.id"
 				>
 					<checkbox-group class="task-status" @change="onChangeCheckbox(item)">
@@ -160,7 +181,7 @@ init()
 
 
 			<div class="action">
-				<label class="action-inner" :style="{ marginBottom: $bottom + 'px' }">
+				<label class="action-inner" :style="{ marginBottom: $safeAreaBottom + 'px' }">
 					<button
 						size="default"
 						type="primary"
@@ -173,7 +194,16 @@ init()
 				</label>
 			</div>
 		</div>
-		<div class="detail-view">
+
+		<div class="detail-view" v-if="$screenMode === 'wide'">
+			<div v-if="!$currentTask" class="empty">
+				（当前没有选中的任务）
+			</div>
+			<div v-else class="detail-wrapper">
+				<div>{{ $currentTask.id }}</div>
+				<div>{{ $currentTask.title }}</div>
+				<div>{{ $currentTask.isCompleted }}</div>
+			</div>
 			<!--TODO-->
 		</div>
 	</div>
@@ -187,19 +217,6 @@ init()
 	flex-direction: row;
 	justify-content: center;
 }
-.main-view {
-	flex: 1;
-	max-width: 640px;
-	overflow-x: hidden;
-	overflow-y: auto;
-}
-.detail-view {
-	display: none;
-	flex: 1;
-	overflow-x: hidden;
-	overflow-y: auto;
-}
-
 .empty {
 	padding-top: 80px;
 	display: flex;
@@ -207,26 +224,60 @@ init()
 	justify-content: center;
 	flex-direction: column;
 	color: #999;
-	.add {
-		margin-top: 20px;
-		padding: 10px;
-		text-decoration: underline;
-		cursor: pointer;
-		&:hover {
-			color: #333;
+}
+
+.main-view {
+	flex: 1;
+	overflow-x: hidden;
+	overflow-y: hidden;
+	position: relative;
+	.content.wide & {
+		max-width: 500px;
+	}
+	.empty {
+		.add {
+			margin-top: 20px;
+			padding: 10px;
+			text-decoration: underline;
+			cursor: pointer;
+			&:hover {
+				color: #333;
+			}
 		}
 	}
 }
 
+.detail-view {
+	flex: 1;
+	overflow-x: hidden;
+	overflow-y: auto;
+	border-left: 1px solid $color-splitter;
+	background-color: $bg-color-stage;
+	.detail-wrapper {
+		margin: auto;
+		padding: 20px;
+		max-width: 500px;
+	}
+}
+
+
 // task item
 .task-list {
-	padding-bottom: 100px;
+	height: 100%;
+	overflow-x: hidden;
+	overflow-y: auto;
 }
 .task-item {
 	display: flex;
 	align-items: center;
 	justify-content: space-between;
-	border-bottom: 1px solid #ddd;
+	border-bottom: 1px solid $color-hr;
+	&:hover {
+		background-color: $bg-color-hover;
+	}
+	&.is-current {
+		background-color: $bg-color-active;
+	}
 	.task-status {
 		flex: 0 0;
 		.task-status-label {
@@ -261,6 +312,7 @@ init()
 
 .total {
 	padding: 20px;
+	padding-bottom: 110px;
 	color: #999;
 	text-align: center;
 }
@@ -270,16 +322,15 @@ init()
 .action {
 	display: flex;
 	justify-content: center;
-	position: fixed;
+	position: absolute;
 	bottom: 0;
 	left: 0;
-	width: 100%;
+	right: 0;
 	background-color: rgba(0, 0, 0, 0.3);
 }
 .action-inner {
 	padding: 15px 20px;
 	width: 100%;
-	max-width: 640px;
 }
 
 
