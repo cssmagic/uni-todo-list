@@ -6,9 +6,9 @@ import type { ITask } from '@/types'
 import { ref, reactive, watch } from 'vue'
 
 const demoData: Array<ITask> = [
-	{ id: '1c41909a-663f-4362-8359-ab09c653e7e2', title: 'Learn Vue 3', isCompleted: true },
-	{ id: '4b2eae19-3393-4d68-b182-fa5e71cee1ad', title: 'Learn TypeScript', isCompleted: false },
-	{ id: '6e6b986a-5c65-4cea-a4bf-9398f0d1fbbf', title: 'Learn Uni-App', isCompleted: false },
+	{ id: '1c41909a-663f-4362-8359-ab09c653e7e2', title: '示例一：去超市买水果', isCompleted: true },
+	{ id: '4b2eae19-3393-4d68-b182-fa5e71cee1ad', title: '示例二：理发', isCompleted: false },
+	{ id: '6e6b986a-5c65-4cea-a4bf-9398f0d1fbbf', title: '示例三：寄快递', isCompleted: false },
 ]
 
 const STORAGE_KEY = 'tasks'

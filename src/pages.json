@@ -18,6 +18,7 @@
 		"navigationBarTitleText": "呆呆清单",
 		"navigationBarTextStyle": "white",
 		"navigationBarBackgroundColor": "#333",
-		"backgroundColor": "#F8F8F8"
+		"backgroundColor": "#F8F8F8",
+		"pageOrientation": "auto"
 	}
 }
