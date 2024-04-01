@@ -44,7 +44,6 @@ function onClickBtnSave() {
 				<uni-easyinput
 					name="title"
 					autoHeight
-					focus
 					type="textarea"
 					v-model.lazy.trim="$taskTitle"
 					placeholder="请输入任务标题"
@@ -70,6 +69,7 @@ function onClickBtnSave() {
 	display: flex;
 	justify-content: flex-end;
 	.btn-delete {
+		margin-right: -10px;
 		padding: 10px;
 		color: #999;
 		cursor: pointer;
