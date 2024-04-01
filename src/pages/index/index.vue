@@ -4,6 +4,7 @@ import type { ITask } from '@/types'
 import type { UniPopup } from '@uni-helper/uni-ui-types'
 import * as storage from '@/utils/storage'
 import { toSimpleDateTime } from '@/utils/formatter'
+import TaskDetail from '@/components/TaskDetail.vue'
 
 const $tasks = storage.getItems()
 const $screenMode = ref<'normal' | 'wide'>('normal')
@@ -69,6 +70,7 @@ function onClickTaskTitle(item: ITask) {
 function onChangeCheckbox(item: ITask) {
 	// console.log('toggle:', item.id)
 	item.isCompleted = !item.isCompleted
+	$currentTask.value = item
 }
 
 function deleteTask(item: ITask) {
@@ -77,6 +79,13 @@ function deleteTask(item: ITask) {
 	$promptDeleteTask.value = `是否删除 “${item.title}”？`
 
 	$dialogDelete.value!.open()
+}
+
+function onSaveTaskDetail(data: object) {
+	console.log('save:', data)
+	if ($currentTask.value) {
+		$currentTask.value.title = data.title
+	}
 }
 
 function dialogInputConfirm(value: string) {
@@ -148,7 +157,7 @@ init()
 					<div class="task-title" @click="onClickTaskTitle(item)">
 						{{ item.title }}
 					</div>
-					<div class="task-action" @click="deleteTask(item)">
+					<div class="task-action" @click="deleteTask(item)" v-if="$screenMode !== 'wide'">
 						<uni-icons type="trash" size="24" color="currentColor"></uni-icons>
 					</div>
 				</div>
@@ -200,11 +209,13 @@ init()
 				（当前没有选中的任务）
 			</div>
 			<div v-else class="detail-wrapper">
-				<div>{{ $currentTask.id }}</div>
-				<div>{{ $currentTask.title }}</div>
-				<div>{{ $currentTask.isCompleted }}</div>
+				<TaskDetail
+					:isEditing="true"
+					:task="$currentTask"
+					@delete="deleteTask"
+					@submit="onSaveTaskDetail"
+				></TaskDetail>
 			</div>
-			<!--TODO-->
 		</div>
 	</div>
 </template>
@@ -275,7 +286,8 @@ init()
 	&:hover {
 		background-color: $bg-color-hover;
 	}
-	&.is-current {
+	// 仅在宽屏状态下显示激活效果
+	.wide &.is-current {
 		background-color: $bg-color-active;
 	}
 	.task-status {

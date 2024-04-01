@@ -27,4 +27,7 @@ uni-page-body {
 	color: $color;
 	background: $bg-color;
 }
+.uni-dialog-content {
+	line-height: $lh-text;
+}
 </style>
