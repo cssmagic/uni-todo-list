@@ -35,8 +35,12 @@
 ## 演示
 
 * Web：https://todo.cmcm.app/
-* 微信小程序：备案中，未上架。
+
 * Android App：请在 [最新 Release](https://github.com/cssmagic/uni-todo-list/releases/latest) 的 Assets 中下载 APK 文件。
+
+* 微信小程序：
+
+	<img src="https://github.com/cssmagic/uni-todo-list/assets/1231359/16711a50-ab18-4cfe-993b-63132759c2f2" width="129" height="129">
 
 
 ***
